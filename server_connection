@@ -1,0 +1,18 @@
+import sqlalchemy
+import urllib
+import pandas as pd
+
+quoted = urllib.parse.quote_plus('DRIVER={SQL Server};'
+                                 'Server=ORDEUUATREP01\\SQLSERVER2012;'
+                                 'Database=EUDaxViewReport;'
+                                 'UID=report_viewer;'
+                                 'PWD=awdr@123;'
+                                 'Trusted_Connection=yes')
+
+engine = sqlalchemy.create_engine('mssql+pyodbc:///?odbc_connect={}'.format(quoted))
+
+stored = pd.read_sql('SELECT * FROM stress_sl',engine)
+
+new=stored.iloc[3:6,:]
+
+new.to_sql('stress_sl', con=engine,if_exists="append",index=False)
